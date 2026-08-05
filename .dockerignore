@@ -1,0 +1,12 @@
+.git
+.next
+node_modules
+coverage
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+sessions.md
+progress.md
+imp notes.md
