@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "../styles/foundation.css";
+@import "../styles/auth.css";
+@import "../styles/workspace.css";
+@import "../styles/mcp.css";
+@import "../styles/content.css";
+@import "../styles/deliverable.css";
+@import "../styles/media.css";
+@import "../styles/telemetry.css";
+@import "../styles/composer.css";
+@import "../styles/chat.css";
