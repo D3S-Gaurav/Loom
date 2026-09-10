@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-labelledby="title desc">
+  <title id="title">Loom</title>
+  <desc id="desc">Loom agent swarm orchestrator logo.</desc>
+  <g transform="translate(8 8)">
+    <rect x="2" y="2" width="76" height="76" rx="20" fill="#12101f"/>
+    <rect x="2.5" y="2.5" width="75" height="75" rx="19.5" fill="none" stroke="#a78bfa" stroke-opacity=".34"/>
+    <path d="M15 55 27 24l13 31 13-31 12 31" fill="none" stroke="#a78bfa" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"/>
+    <circle cx="15" cy="55" r="3.8" fill="#67e8f9"/><circle cx="27" cy="24" r="3.8" fill="#c4b5fd"/>
+    <circle cx="40" cy="55" r="3.8" fill="#67e8f9"/><circle cx="53" cy="24" r="3.8" fill="#c4b5fd"/>
+    <circle cx="65" cy="55" r="3.8" fill="#67e8f9"/>
+  </g>
+  <text x="108" y="60" fill="#f4f1ff" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="48" font-weight="720" letter-spacing="-1.5">Loom</text>
+</svg>
