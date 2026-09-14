@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package loom.telemetry.v1;
+
+option go_package = "github.com/D3S-Gaurav/Loom/services/telemetry/gen/telemetry/v1;telemetryv1";
+
+// TelemetryService exposes the swarm event stream that the Go consumer already
+// reads off Kafka. HTTP /metrics is a pull surface for Prometheus; this is the
+// push surface for other services, which is why the interesting call here is a
+// server stream rather than a poll.
+service TelemetryService {
+  // Point-in-time snapshot of the counters the consumer maintains. Equivalent
+  // to scraping /metrics, but typed and without parsing the exposition format.
+  rpc GetRunMetrics(GetRunMetricsRequest) returns (GetRunMetricsResponse);
+
+  // Live fan-out of every swarm event the consumer commits, optionally narrowed
+  // to a single run. The server owns the lifetime: it ends the stream when the
+  // process shuts down or when the client falls too far behind.
+  rpc StreamRunEvents(StreamRunEventsRequest) returns (stream RunEvent);
+}
+
+message GetRunMetricsRequest {}
+
+message GetRunMetricsResponse {
+  bool consumer_up = 1;
+  int64 events_consumed = 2;
+  int64 invalid_events = 3;
+  int64 runs_started = 4;
+  int64 runs_completed = 5;
+  int64 run_errors = 6;
+  int64 agent_spawns = 7;
+  int64 token_chunks = 8;
+  int64 last_event_timestamp_ms = 9;
+  int64 stream_subscribers = 10;
+  int64 slow_subscribers_dropped = 11;
+}
+
+message StreamRunEventsRequest {
+  // Empty means "every run". Filtering server-side keeps a per-run dashboard
+  // from paying for the whole firehose.
+  string run_id = 1;
+}
+
+// RunEvent mirrors the envelope the web tier publishes to Kafka. The event body
+// is carried as raw JSON because its shape is a discriminated union owned by
+// the TypeScript orchestrator (src/lib/swarm/types.ts); pinning every variant
+// into protobuf would make the two repos' schemas move in lockstep.
+message RunEvent {
+  int32 version = 1;
+  string run_id = 2;
+  int64 sequence = 3;
+  int64 occurred_at_ms = 4;
+  string kind = 5;
+  string payload_json = 6;
+}
