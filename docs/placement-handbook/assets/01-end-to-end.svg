@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Loom end-to-end request and event flow</title>
+  <desc id="desc">Five-lane flow from browser to API, orchestrator, event bus, Redis and Kafka, then back to the UI.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#274c77"/></marker>
+    <style>
+      .lane{fill:#f7f7f7;stroke:#c9c9c9;stroke-width:1}.head{font:700 17px Arial;fill:#111}.label{font:600 14px Arial;fill:#111}.small{font:12px Arial;fill:#333}.box{fill:#fff;stroke:#222;stroke-width:1.4;rx:7}.accent{fill:#eef5fb;stroke:#274c77;stroke-width:1.8;rx:7}.infra{fill:#f1f8f4;stroke:#2d6a4f;stroke-width:1.8;rx:7}.line{stroke:#274c77;stroke-width:2;fill:none;marker-end:url(#arrow)}.dash{stroke:#777;stroke-width:1.5;stroke-dasharray:6 5;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1200" height="720" fill="#fff"/>
+  <rect class="lane" x="20" y="45" width="210" height="645"/><rect class="lane" x="250" y="45" width="210" height="645"/>
+  <rect class="lane" x="480" y="45" width="210" height="645"/><rect class="lane" x="710" y="45" width="210" height="645"/>
+  <rect class="lane" x="940" y="45" width="240" height="645"/>
+  <text class="head" x="125" y="30" text-anchor="middle">Browser</text><text class="head" x="355" y="30" text-anchor="middle">Next.js API</text>
+  <text class="head" x="585" y="30" text-anchor="middle">Orchestrator</text><text class="head" x="815" y="30" text-anchor="middle">EventBus</text>
+  <text class="head" x="1060" y="30" text-anchor="middle">Infrastructure</text>
+
+  <rect class="accent" x="40" y="75" width="170" height="75"/><text class="label" x="125" y="100" text-anchor="middle">1. GoalBar</text>
+  <text class="small" x="125" y="121" text-anchor="middle">click Deploy swarm</text><text class="small" x="125" y="138" text-anchor="middle">useRunSwarm()</text>
+  <path class="line" d="M210 112 H270"/>
+  <rect class="box" x="270" y="65" width="170" height="96"/><text class="label" x="355" y="88" text-anchor="middle">2. POST /api/swarm</text>
+  <text class="small" x="355" y="109" text-anchor="middle">parse + validate goal</text><text class="small" x="355" y="126" text-anchor="middle">check key + readiness</text>
+  <text class="small" x="355" y="143" text-anchor="middle">Redis rate limit</text>
+  <path class="dash" d="M440 110 H1010"/>
+  <rect class="infra" x="980" y="66" width="160" height="92"/><text class="label" x="1060" y="91" text-anchor="middle">Readiness gate</text>
+  <text class="small" x="1060" y="113" text-anchor="middle">Kafka topic metadata</text><text class="small" x="1060" y="131" text-anchor="middle">Redis PING</text>
+
+  <path class="line" d="M355 161 V205 H500"/>
+  <rect class="accent" x="500" y="180" width="170" height="82"/><text class="label" x="585" y="205" text-anchor="middle">3. runSwarm()</text>
+  <text class="small" x="585" y="226" text-anchor="middle">planner creates DAG</text><text class="small" x="585" y="244" text-anchor="middle">returns control immediately</text>
+  <path class="line" d="M670 220 H730"/>
+  <rect class="box" x="730" y="180" width="170" height="82"/><text class="label" x="815" y="205" text-anchor="middle">4. emit(event)</text>
+  <text class="small" x="815" y="226" text-anchor="middle">sequence envelope</text><text class="small" x="815" y="244" text-anchor="middle">two independent paths</text>
+
+  <path class="line" d="M815 262 V315 H430"/>
+  <rect class="accent" x="270" y="290" width="170" height="86"/><text class="label" x="355" y="315" text-anchor="middle">5A. Local SSE path</text>
+  <text class="small" x="355" y="337" text-anchor="middle">AsyncIterator → frame</text><text class="small" x="355" y="355" text-anchor="middle">data: JSON + blank line</text>
+  <path class="line" d="M270 333 H210"/>
+  <rect class="box" x="40" y="290" width="170" height="86"/><text class="label" x="125" y="315" text-anchor="middle">6. Stream reader</text>
+  <text class="small" x="125" y="337" text-anchor="middle">decode + buffer + parse</text><text class="small" x="125" y="355" text-anchor="middle">Zustand apply(event)</text>
+
+  <path class="line" d="M815 262 V420 H980"/>
+  <rect class="infra" x="980" y="385" width="160" height="82"/><text class="label" x="1060" y="410" text-anchor="middle">5B-1. Redis</text>
+  <text class="small" x="1060" y="432" text-anchor="middle">Lua: hash + stream</text><text class="small" x="1060" y="450" text-anchor="middle">idempotent sequence</text>
+  <path class="line" d="M1060 467 V520"/>
+  <rect class="infra" x="980" y="520" width="160" height="82"/><text class="label" x="1060" y="545" text-anchor="middle">5B-2. Kafka</text>
+  <text class="small" x="1060" y="567" text-anchor="middle">key = runId</text><text class="small" x="1060" y="585" text-anchor="middle">acks = -1</text>
+  <rect class="box" x="730" y="500" width="170" height="104"/><text class="label" x="815" y="526" text-anchor="middle">Ordered promise chain</text>
+  <text class="small" x="815" y="549" text-anchor="middle">Redis then Kafka</text><text class="small" x="815" y="568" text-anchor="middle">failure is sticky</text>
+  <text class="small" x="815" y="587" text-anchor="middle">later events still attempt</text><path class="dash" d="M900 552 H980"/>
+
+  <rect class="accent" x="500" y="430" width="170" height="160"/><text class="label" x="585" y="455" text-anchor="middle">7. DAG waves</text>
+  <text class="small" x="585" y="480" text-anchor="middle">workers run in parallel</text><text class="small" x="585" y="500" text-anchor="middle">validator may retry once</text>
+  <text class="small" x="585" y="520" text-anchor="middle">blackboard stores outputs</text><text class="small" x="585" y="540" text-anchor="middle">synthesizer creates final</text>
+  <text class="small" x="585" y="560" text-anchor="middle">emits run.done</text><text class="small" x="585" y="580" text-anchor="middle">await bus.close()</text>
+  <path class="dash" d="M670 510 H730"/>
+  <path class="line" d="M815 604 V650 H210"/>
+  <rect class="box" x="40" y="620" width="170" height="52"/><text class="label" x="125" y="643" text-anchor="middle">8. UI settles</text>
+  <text class="small" x="125" y="660" text-anchor="middle">done or terminal error</text>
+</svg>
