@@ -1,0 +1,36 @@
+name: Bug report
+description: Something behaves differently from what the docs or the UI promised.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+      placeholder: |
+        I started a run in Max mode with ...
+        I expected ...
+        Instead ...
+    validations:
+      required: true
+  - type: input
+    id: run-id
+    attributes:
+      label: Run ID
+      description: If a run misbehaved, the ID from the URL narrows this down fast.
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Execution mode
+      options: [Low, Auto, Max, Not applicable]
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Hosted or local, and if local, the output of `node -v` and `pnpm -v`.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or errors
+      description: Paste anything relevant. It is rendered as code, no backticks needed.
+      render: text

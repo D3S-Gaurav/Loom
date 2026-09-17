@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A second push to the same branch makes the first run's answer irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: web (lint, typecheck, test)
+    runs-on: ubuntu-latest
+
+    # src/lib/swarm/redis.integration.test.ts talks to a real Redis on purpose —
+    # the atomic run projection is a Lua script, and a mock would only assert
+    # that the mock was called. CI gets a real server rather than skipping them.
+    services:
+      redis:
+        image: redis:8.8.0-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: pnpm/action-setup@v6.0.10
+        with:
+          version: 11.1.2
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint
+
+      - run: pnpm typecheck
+
+      - run: pnpm test
+        env:
+          REDIS_URL: redis://127.0.0.1:6379
+
+  telemetry:
+    name: telemetry (vet, build, race tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/telemetry
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-go@v7.0.0
+        with:
+          # Single source of truth for the Go version: the module itself.
+          go-version-file: services/telemetry/go.mod
+          cache-dependency-path: services/telemetry/go.sum
+
+      - run: go vet ./...
+
+      - run: go build ./...
+
+      # -race is the point of this job: the telemetry service fans one Kafka
+      # consumer out to many gRPC and WebSocket subscribers concurrently.
+      - run: go test -race ./...
