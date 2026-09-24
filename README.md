@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/brand/murmur-logo.svg" width="360" alt="Loom" />
+  <img src="public/brand/loom-logo.svg" width="360" alt="Loom" />
 </p>
 
 <h1 align="center">Loom</h1>
