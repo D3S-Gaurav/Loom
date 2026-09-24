@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-18T16:59:45Z",
+  "title": "Design System: Loom",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Deep Console",
+        "canonical": "#08070d",
+        "tonalRamp": [
+          "#08070d",
+          "#100e19",
+          "#171322",
+          "#211c2f",
+          "#393148",
+          "#5f556f",
+          "#aaa1b9",
+          "#f6f3ff"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Relay Violet",
+        "canonical": "#a78bfa",
+        "tonalRamp": [
+          "#211539",
+          "#35215c",
+          "#4e3186",
+          "#6845ad",
+          "#8766d6",
+          "#a78bfa",
+          "#cbbcff",
+          "#eee9ff"
+        ]
+      },
+      "cyan": {
+        "role": "secondary",
+        "displayName": "Signal Cyan",
+        "canonical": "#67e8f9",
+        "tonalRamp": [
+          "#072a31",
+          "#0b414b",
+          "#105d6a",
+          "#187b8b",
+          "#279daf",
+          "#44c4d5",
+          "#67e8f9",
+          "#d7fbff"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Validation Mint",
+        "canonical": "#6ee7b7",
+        "tonalRamp": [
+          "#09291f",
+          "#0e4030",
+          "#165b44",
+          "#207959",
+          "#329a72",
+          "#4ec18f",
+          "#6ee7b7",
+          "#d8faeb"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Showcase Headline",
+        "purpose": "Authentication and public product story only."
+      },
+      "body": {
+        "displayName": "Product Body",
+        "purpose": "Interface explanations and generated deliverables."
+      },
+      "label": {
+        "displayName": "Telemetry Label",
+        "purpose": "Execution state, timing, and infrastructure."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Fast product state changes."
+      },
+      {
+        "name": "state-transition",
+        "value": "180ms",
+        "purpose": "Hover, focus, selection, and popover feedback."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile",
+        "value": "560px"
+      },
+      {
+        "name": "stacked",
+        "value": "820px"
+      },
+      {
+        "name": "compact-workspace",
+        "value": "1100px"
+      },
+      {
+        "name": "dense-desktop",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single high-emphasis action for authentication and swarm deployment.",
+      "html": "<button class=\"ds-primary\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M13.7 4.2c2.1-1.2 4.2-.9 5.9-.6.3 1.7.6 3.8-.6 5.9l-5.6 7-5.9-5.9 6.2-6.4Z\"/></svg>Deploy swarm</button>",
+      "css": ".ds-primary{display:inline-flex;min-height:44px;align-items:center;justify-content:center;gap:9px;border:0;border-radius:8px;background:var(--accent,#a78bfa);color:#110b1d;padding:0 16px;font:700 14px ui-sans-serif;cursor:pointer;transition:background 180ms,transform 180ms}.ds-primary svg{width:18px;fill:none;stroke:currentColor;stroke-width:1.8}.ds-primary:hover{background:#b9a4ff;transform:translateY(-1px)}.ds-primary:focus-visible{outline:2px solid #67e8f9;outline-offset:3px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Dark inset account or goal field with a clear operational boundary.",
+      "html": "<label class=\"ds-field-label\">Goal<span class=\"ds-field\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"2\"/></svg><input placeholder=\"Describe the outcome…\"></span></label>",
+      "css": ".ds-field-label{display:grid;gap:7px;color:#e1dbea;font:650 11px ui-sans-serif}.ds-field{display:flex;min-height:45px;align-items:center;gap:9px;border:1px solid #2b253a;border-radius:8px;background:#0c0a12;color:#8f859f;padding:0 12px}.ds-field:focus-within{border-color:#a78bfa;outline:2px solid #67e8f9;outline-offset:3px}.ds-field svg{width:16px;fill:#67e8f9}.ds-field input{width:100%;border:0;outline:0;background:transparent;color:#f6f3ff}"
+    },
+    {
+      "name": "Example Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Concise goal starters that fill the composer without launching it.",
+      "html": "<button class=\"ds-chip\">System architecture</button>",
+      "css": ".ds-chip{min-height:28px;border:1px solid transparent;border-radius:999px;background:#171322;color:#aaa1b9;padding:0 10px;font:500 11px ui-sans-serif;cursor:pointer}.ds-chip:hover{border-color:#4a3e65;color:#f6f3ff}.ds-chip:focus-visible{outline:2px solid #67e8f9;outline-offset:3px}"
+    },
+    {
+      "name": "Workspace Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "A functional boundary for recent runs, the graph, or selected output.",
+      "html": "<section class=\"ds-panel\"><header><span>Execution graph</span><small>Standby</small></header><p>Dependencies and agent handoffs appear here.</p></section>",
+      "css": ".ds-panel{overflow:hidden;border:1px solid #2b253a;border-radius:16px;background:#100e19;color:#e1dbea;font-family:ui-sans-serif}.ds-panel header{display:flex;min-height:49px;align-items:center;justify-content:space-between;border-bottom:1px solid #2b253a;padding:0 13px;font-size:11px;font-weight:700}.ds-panel small{color:#67e8f9;font:600 9px ui-monospace}.ds-panel p{margin:0;padding:16px;color:#aaa1b9;font-size:12px;line-height:1.6}"
+    },
+    {
+      "name": "Agent Node",
+      "kind": "custom",
+      "description": "The signature graph primitive for role, task, status, and preview.",
+      "html": "<article class=\"ds-agent\"><span class=\"ds-agent-icon\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3 5 7v5c0 4.5 2.8 7.4 7 9 4.2-1.6 7-4.5 7-9V7l-7-4Z\"/></svg></span><div><small>Planner</small><strong>Build execution plan</strong></div><p><i></i>thinking</p></article>",
+      "css": ".ds-agent{display:grid;width:210px;grid-template-columns:30px 1fr;gap:9px;border:1px solid #4a3e65;border-radius:12px;background:#110e1b;color:#e1dbea;padding:11px 12px;font-family:ui-sans-serif}.ds-agent-icon{display:grid;width:30px;height:30px;place-items:center;border-radius:8px;background:#2b2049;color:#a78bfa}.ds-agent-icon svg{width:16px;fill:none;stroke:currentColor;stroke-width:1.8}.ds-agent div{display:grid}.ds-agent small{color:#a78bfa;font:700 9px ui-monospace}.ds-agent strong{font-size:11px}.ds-agent p{grid-column:1/-1;display:flex;align-items:center;gap:6px;margin:1px 0 0;color:#aaa1b9;font-size:9px}.ds-agent i{width:6px;height:6px;border-radius:50%;background:#67e8f9}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Neon Relay Console",
+    "overview": "Loom feels like a focused operations instrument in a low-light workspace: quiet at rest, visibly alive when work is moving. Dark tonal layers keep dense orchestration legible; violet identifies intent and selection, while cyan behaves like a live signal traveling between agents. Glass is permitted only where it clarifies hierarchy or preserves spatial context. The product is precise, energetic, and technically credible.",
+    "keyCharacteristics": [
+      "Dense but calm product surfaces",
+      "A single connected SVG icon language",
+      "Neon reserved for live state, focus, and important action",
+      "Tonal depth instead of decorative shadow stacks",
+      "Strong goal-first hierarchy across every viewport"
+    ],
+    "rules": [
+      {
+        "name": "The Signal Earns the Glow Rule",
+        "body": "Violet and cyan glow only when work is active, focused, or selected. Static decoration stays tonal.",
+        "section": "colors"
+      },
+      {
+        "name": "The State Is More Than Color Rule",
+        "body": "Every success, warning, live, or failure state also carries a label or icon.",
+        "section": "colors"
+      },
+      {
+        "name": "The Product Speaks Normally Rule",
+        "body": "Uppercase and wide tracking are forbidden as generic section scaffolding. Machine labels may use monospace, but ordinary interface copy stays in sentence case.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Until Active Rule",
+        "body": "Depth responds to focus, selection, popover state, or live computation. Static content never floats merely to look premium.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Glass Has a Job Rule",
+        "body": "Transparency may preserve graph or canvas context. If an opaque surface communicates the same hierarchy, use the opaque surface.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do make goal, graph, selected output, and final deliverable read as one workflow.",
+      "Do use SVG icons from the shared icon system rather than emoji or text glyphs.",
+      "Do preserve visible keyboard focus, reduced motion, and WCAG 2.2 AA contrast.",
+      "Do keep billing, authentication, system state, and errors familiar and explicit.",
+      "Do use neon to indicate action, computation, selection, or verified state."
+    ],
+    "donts": [
+      "Don't build generic hackathon dashboards or describe Loom as a hackathon entry.",
+      "Don't add decorative sci-fi chrome, illegible low-contrast glass, or neon effects without meaning.",
+      "Don't use card grids that obscure the core workflow or nest cards inside cards.",
+      "Don't make the interface require repository knowledge to understand the product.",
+      "Don't hide system state or make account and billing actions feel experimental.",
+      "Don't use gradient text, side-stripe accents, sketchy SVG scenes, or broad ghost-card shadows.",
+      "Don't use radii above 16px on panels, forms, or agent nodes."
+    ]
+  }
+}

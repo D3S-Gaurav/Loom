@@ -1,0 +1,19 @@
+diff --git a/src/network/requestQueue/index.js b/src/network/requestQueue/index.js
+index 451e355..420c666 100644
+--- a/src/network/requestQueue/index.js
++++ b/src/network/requestQueue/index.js
+@@ -310,12 +310,10 @@ module.exports = class RequestQueue extends EventEmitter {
+     // Note that if we're merely "overloaded" by having too many inflight requests
+     // we will anyways check the queue when one of them gets fulfilled.
+     let scheduleAt = this.throttledUntil - Date.now()
+-    if (!this.throttleCheckTimeoutId) {
+-      if (this.pending.length > 0) {
+-        scheduleAt = scheduleAt > 0 ? scheduleAt : CHECK_PENDING_REQUESTS_INTERVAL
+-      }
++    if (!this.throttleCheckTimeoutId && this.pending.length > 0) {
++      scheduleAt = scheduleAt > 0 ? scheduleAt : CHECK_PENDING_REQUESTS_INTERVAL
+       this.throttleCheckTimeoutId = setTimeout(() => {
+         this.throttleCheckTimeoutId = null
+         this.checkPendingRequests()
+       }, scheduleAt)
+     }
