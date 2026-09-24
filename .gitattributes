@@ -1,0 +1,5 @@
+# PDFs are binary artifacts; do not attempt textual whitespace diffs.
+*.pdf binary
+
+# The generated handbook uses Markdown's two-space hard line breaks.
+Loom_Placement_Handbook.md whitespace=-trailing-space
