@@ -1,0 +1,30 @@
+.loom-relay-media {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.loom-relay-media::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(8 7 13 / 28%), rgb(8 7 13 / 58%)),
+    radial-gradient(circle at 50% 45%, transparent 18%, rgb(8 7 13 / 48%) 72%);
+  content: "";
+}
+
+.loom-relay-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.76;
+  filter: saturate(88%);
+  mask-image: radial-gradient(ellipse at center, black 20%, rgb(0 0 0 / 72%) 56%, transparent 92%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loom-relay-media video { display: none; }
+  .loom-relay-media { background: url("/media/loom-relay-poster.jpg") center / cover no-repeat; }
+}

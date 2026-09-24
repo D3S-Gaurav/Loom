@@ -1,0 +1,34 @@
+.loom-token-meter {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgb(16 14 25 / 70%);
+  color: var(--muted);
+  padding: 0 9px;
+  font-family: var(--font-mono);
+}
+
+.loom-token-meter > span {
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.loom-token-meter > small { color: var(--subtle); font-size: 8px; }
+.loom-token-meter.is-live { border-color: rgb(103 232 249 / 28%); color: var(--cyan); }
+.loom-token-meter.is-live svg { animation: loom-live-pulse 1.4s ease-in-out infinite; }
+
+@media (max-width: 720px) {
+  .loom-token-meter > small { display: none; }
+}
+
+@media (max-width: 560px) {
+  .loom-token-meter { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loom-token-meter.is-live svg { animation: none; }
+}
