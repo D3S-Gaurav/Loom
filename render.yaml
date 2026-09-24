@@ -1,0 +1,55 @@
+# Render Blueprint for the Go telemetry service (services/telemetry).
+#
+# The Next.js app deploys to Vercel, where a serverless function cannot hold a
+# socket open for the length of a run. The browser's live WebSocket therefore has
+# to terminate somewhere always-on, and this is that somewhere: one long-lived
+# container that owns the Kafka consumer and fans it out to every subscriber.
+#
+# Apply with: Render Dashboard > New > Blueprint, pointed at this repository.
+services:
+  - type: web
+    name: loom-telemetry
+    runtime: docker
+    rootDir: services/telemetry
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    region: oregon
+    # /healthz reports the Kafka consumer, not just the process. A deploy that
+    # cannot reach the broker fails here instead of serving an empty socket.
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      # A Render web service publishes exactly one HTTP port, and 10000 is the
+      # one it expects. That port carries /ws, /healthz and /metrics; the gRPC
+      # listener stays private to the container, which is fine because gRPC is
+      # the service-to-service surface and browsers cannot speak it anyway.
+      - key: TELEMETRY_PORT
+        value: "10000"
+      - key: TELEMETRY_GRPC_PORT
+        value: "9090"
+      # Exact origins, comma separated, including scheme. Must list every domain
+      # the app is served from: the production domain and any preview domain
+      # that should be able to open the socket. A WebSocket handshake is a plain
+      # GET, so CORS preflight never protects this endpoint.
+      - key: TELEMETRY_WS_ALLOWED_ORIGINS
+        sync: false
+      # Same managed broker the web tier publishes to. Set in the dashboard, not
+      # here: these are credentials.
+      - key: KAFKA_BROKERS
+        sync: false
+      - key: KAFKA_SWARM_EVENTS_TOPIC
+        value: loom.swarm.events
+      - key: KAFKA_TELEMETRY_GROUP_ID
+        value: loom-telemetry-v1
+      - key: KAFKA_SSL
+        value: "1"
+      - key: KAFKA_SASL_MECHANISM
+        value: scram-sha-256
+      - key: KAFKA_USERNAME
+        sync: false
+      - key: KAFKA_PASSWORD
+        sync: false
+      # Only needed when the broker presents a private/project CA.
+      - key: KAFKA_CA_CERT
+        sync: false
