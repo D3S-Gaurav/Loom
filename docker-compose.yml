@@ -1,0 +1,201 @@
+name: loom
+
+# This single-node stack is production-like infrastructure for local development
+# and CI. Deploy the app against replicated managed Kafka/Redis in production.
+services:
+  postgres:
+    image: postgres:18.2-alpine
+    environment:
+      POSTGRES_DB: loom
+      POSTGRES_USER: loom
+      POSTGRES_PASSWORD: loom
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U loom -d loom"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:8.8.0-alpine
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --appendfsync
+      - everysec
+      - --save
+      - "60"
+      - "1000"
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  kafka-storage-init:
+    image: apache/kafka:4.3.1
+    user: "0:0"
+    command: ["sh", "-c", "chown -R 1000:1000 /var/lib/kafka/data"]
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    restart: "no"
+
+  kafka:
+    image: apache/kafka:4.3.1
+    hostname: kafka
+    depends_on:
+      kafka-storage-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,HOST:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://:29093,INTERNAL://:19092,HOST://:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:19092,HOST://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+    restart: unless-stopped
+
+  kafka-init:
+    image: apache/kafka:4.3.1
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command:
+      - /opt/kafka/bin/kafka-topics.sh
+      - --bootstrap-server
+      - kafka:19092
+      - --create
+      - --if-not-exists
+      - --topic
+      - loom.swarm.events
+      - --partitions
+      - "6"
+      - --replication-factor
+      - "1"
+      - --config
+      - cleanup.policy=delete
+      - --config
+      - retention.ms=604800000
+    restart: "no"
+
+  temporal-storage-init:
+    image: alpine:3.23
+    user: "0:0"
+    command: ["sh", "-c", "chown -R 1000:1000 /var/lib/temporal"]
+    volumes:
+      - temporal-data:/var/lib/temporal
+    restart: "no"
+
+  temporal:
+    image: temporalio/temporal:1.8.0
+    depends_on:
+      temporal-storage-init:
+        condition: service_completed_successfully
+    command:
+      - server
+      - start-dev
+      - --ip
+      - 0.0.0.0
+      - --db-filename
+      - /var/lib/temporal/temporal.db
+    ports:
+      - "127.0.0.1:7233:7233"
+      - "127.0.0.1:8233:8233"
+    volumes:
+      - temporal-data:/var/lib/temporal
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "127.0.0.1:7233"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    restart: unless-stopped
+
+  telemetry:
+    build:
+      context: ./services/telemetry
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    environment:
+      KAFKA_BROKERS: kafka:19092
+      KAFKA_SWARM_EVENTS_TOPIC: loom.swarm.events
+      KAFKA_TELEMETRY_GROUP_ID: loom-telemetry-v1
+      TELEMETRY_PORT: 9091
+      TELEMETRY_GRPC_PORT: 9090
+      TELEMETRY_WS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+    ports:
+      # 9091 is HTTP (/healthz, /metrics, /ws), 9090 is gRPC.
+      - "127.0.0.1:9091:9091"
+      - "127.0.0.1:9090:9090"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9091/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+
+  temporal-worker:
+    profiles: ["app"]
+    build:
+      context: .
+      dockerfile: Dockerfile.temporal
+    env_file:
+      - path: .env.local
+        required: false
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKERS: kafka:19092
+      KAFKA_SWARM_EVENTS_TOPIC: loom.swarm.events
+      REDIS_URL: redis://redis:6379
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_NAMESPACE: default
+      TEMPORAL_TASK_QUEUE: loom-swarm
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:
+  kafka-data:
+  temporal-data:
