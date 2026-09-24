@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Loom — live agent swarm orchestration</title>
+  <desc id="desc">A dark neon product preview with the Loom logo and a connected agent graph.</desc>
+  <defs>
+    <radialGradient id="violet" cx="0" cy="0" r="1" gradientTransform="translate(250 160) rotate(35) scale(650 420)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5b3cae" stop-opacity=".42"/><stop offset="1" stop-color="#08070d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cyan" cx="0" cy="0" r="1" gradientTransform="translate(1080 540) rotate(-145) scale(520 340)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0e7490" stop-opacity=".3"/><stop offset="1" stop-color="#08070d" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="10"/></filter>
+  </defs>
+  <rect width="1280" height="640" rx="32" fill="#08070d"/>
+  <rect width="1280" height="640" rx="32" fill="url(#violet)"/>
+  <rect width="1280" height="640" rx="32" fill="url(#cyan)"/>
+  <path d="M0 128h1280M0 256h1280M0 384h1280M0 512h1280M160 0v640M320 0v640M480 0v640M640 0v640M800 0v640M960 0v640M1120 0v640" stroke="#fff" stroke-opacity=".035"/>
+  <g transform="translate(86 86)">
+    <rect x="2" y="2" width="92" height="92" rx="24" fill="#12101f"/>
+    <rect x="2.5" y="2.5" width="91" height="91" rx="23.5" fill="none" stroke="#a78bfa" stroke-opacity=".45"/>
+    <path d="M18 67 32 29l16 38 16-38 14 38" fill="none" stroke="#a78bfa" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"/>
+    <circle cx="18" cy="67" r="4.5" fill="#67e8f9"/><circle cx="32" cy="29" r="4.5" fill="#c4b5fd"/>
+    <circle cx="48" cy="67" r="4.5" fill="#67e8f9"/><circle cx="64" cy="29" r="4.5" fill="#c4b5fd"/>
+    <circle cx="78" cy="67" r="4.5" fill="#67e8f9"/>
+  </g>
+  <text x="86" y="256" fill="#f6f3ff" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="86" font-weight="740" letter-spacing="-3">Loom</text>
+  <text x="90" y="320" fill="#c8c2db" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="30">One goal. A live, validated agent swarm.</text>
+  <g transform="translate(90 375)" font-family="ui-monospace, SFMono-Regular, monospace" font-size="19">
+    <rect width="176" height="44" rx="22" fill="#a78bfa" fill-opacity=".12" stroke="#a78bfa" stroke-opacity=".35"/>
+    <circle cx="24" cy="22" r="5" fill="#67e8f9"/><text x="42" y="29" fill="#ddd6fe">PLAN → RUN</text>
+    <rect x="192" width="188" height="44" rx="22" fill="#67e8f9" fill-opacity=".08" stroke="#67e8f9" stroke-opacity=".3"/>
+    <circle cx="216" cy="22" r="5" fill="#a78bfa"/><text x="234" y="29" fill="#cffafe">VALIDATE</text>
+    <rect x="396" width="194" height="44" rx="22" fill="#a78bfa" fill-opacity=".12" stroke="#a78bfa" stroke-opacity=".35"/>
+    <circle cx="420" cy="22" r="5" fill="#67e8f9"/><text x="438" y="29" fill="#ddd6fe">SYNTHESIZE</text>
+  </g>
+  <g transform="translate(790 116)">
+    <path d="M72 206 186 102M186 102l124 104M186 102l86 288M72 206l200 184M310 206l-38 184" stroke="#a78bfa" stroke-opacity=".35" stroke-width="3"/>
+    <path d="M72 206h238M186 102l-114 104" stroke="#67e8f9" stroke-opacity=".24" stroke-width="3" stroke-dasharray="7 10"/>
+    <g fill="#0f0d19" stroke-width="2">
+      <rect x="126" y="62" width="120" height="80" rx="14" stroke="#a78bfa"/>
+      <rect x="12" y="166" width="120" height="80" rx="14" stroke="#67e8f9"/>
+      <rect x="250" y="166" width="120" height="80" rx="14" stroke="#f0abfc"/>
+      <rect x="194" y="350" width="156" height="80" rx="14" stroke="#6ee7b7"/>
+    </g>
+    <g fill="#fff" opacity=".28" filter="url(#glow)"><circle cx="186" cy="102" r="22"/><circle cx="72" cy="206" r="20"/><circle cx="310" cy="206" r="20"/><circle cx="272" cy="390" r="20"/></g>
+    <g fill="#f6f3ff" font-family="ui-sans-serif, system-ui" font-size="16" font-weight="650" text-anchor="middle">
+      <text x="186" y="108">PLANNER</text><text x="72" y="212">RESEARCH</text><text x="310" y="212">ANALYZE</text><text x="272" y="396">SYNTHESIZE</text>
+    </g>
+  </g>
+</svg>
