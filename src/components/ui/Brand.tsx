@@ -1,4 +1,4 @@
-import { LoomMark } from "./LoomMark";
+import { LoomMark } from "./MurmurMark";
 
 export function LoomBrand({
   compact = false,
