@@ -32,7 +32,8 @@ describe("MCP access tokens", () => {
     const issued = await issueMcpToken("user-a");
 
     expect(issued.token).toMatch(/^loom_mcp_[A-Za-z0-9_-]{43}$/);
-    expect(issued.prefix).toBe(issued.token.slice(0, 17));
+    // Display prefix is the label plus the first 6 random characters.
+    expect(issued.prefix).toBe(issued.token.slice(0, "loom_mcp_".length + 6));
     expect(issued.createdAt).toEqual(createdAt);
     expect(repository.saveMcpToken).toHaveBeenCalledWith(
       "user-a",
